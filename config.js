@@ -1,9 +1,6 @@
-exports.baseFolder = './'
-exports.imageFolders = [
-    "test/"
-]
+// This is currently setup for the gaia project
+// This should work with any project assuming you update the below paths
 
-/*
 exports.baseFolder = '../gaia/'
 exports.imageFoldersTEST = [
   "apps/bluetooth/style/bb/buttons/images/icons/",
@@ -210,4 +207,3 @@ exports.imageFoldersTEST = [
   "shared/style_unstable/seekbars/images/ui/",
   "shared/style_unstable/tabs/images/ui/"
 ]
-*/

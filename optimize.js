@@ -118,7 +118,6 @@ function processAllFiles() {
 
     function gotResponse(data) {
       data = JSON.parse(data)
-      console.log('GOT RESPONSE:', data)
 
       // If there is no destination, the image is optimized fully
       if (!data.dest) {
@@ -161,7 +160,6 @@ function done() {
   // Write history
   var historyString = JSON.stringify(history)
   fs.writeFileSync(__dirname + '/history.json', historyString, 'utf-8')
-  console.log('NEW HISTORY:', historyString)
 
   console.log('------------------------------------')
   console.log('Image optimization complete.')
