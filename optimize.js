@@ -11,6 +11,8 @@ var history = JSON.parse(fs.readFileSync(__dirname + '/history.json', 'utf-8'))
 
 var allFiles = []
 
+var totalSaved = 0
+
 /**
  * Gets all files located in the config.imageFolders directories
  */
@@ -138,7 +140,10 @@ function processAllFiles() {
         smush()
         return
       }
-      
+
+      var saved = data.src_size - data.dest_size
+      totalSaved += saved
+
       // Update history
       history.files[currFile[0] + currFile[1]] = data.dest_size
 
@@ -159,7 +164,7 @@ function processAllFiles() {
         res.on('end', function(){
           fs.writeFile(currFile[0] + currFile[1], imagedata, 'binary', function(err){
             if (err) console.log(err)
-            console.log('Smush complete!')
+            console.log('Smush complete! Total saved so far: ' + totalSaved)
             smush()
           })
         })
@@ -177,5 +182,5 @@ function done() {
   fs.writeFileSync(__dirname + '/history.json', historyString, 'utf-8')
 
   console.log('------------------------------------')
-  console.log('Image optimization complete.')
+  console.log('Image optimization complete. Saved: ' + totalSaved)
 }
