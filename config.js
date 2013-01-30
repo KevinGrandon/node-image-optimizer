@@ -1,10 +1,10 @@
-exports.baseFolder = __dirname + '/'
+exports.baseFolder = '../'
 exports.imageFolders = [
     "test/"
 ]
 
 /*
-exports.baseFolder = __dirname + '/gaia/'
+exports.baseFolder = '../gaia/'
 exports.imageFoldersTEST = [
   "apps/bluetooth/style/bb/buttons/images/icons/",
   "apps/bluetooth/style/bb/buttons/images/ui/",

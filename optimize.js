@@ -1,6 +1,7 @@
 var fs = require('fs')
 var http = require('http')
 var path = require('path')
+var url = require('url')
 
 console.log('Beginning to optimize images...')
 
@@ -28,9 +29,10 @@ function getAllFiles() {
     }
 
     files.forEach(function(file) {
-      var fileStat = fs.statSync(currDirectory + file)
+      var fullPath = currDirectory + file
+      var fileStat = fs.statSync(fullPath)
 
-      if (!history.files[file] || history.files[file] != fileStat.size) {
+      if (!history.files[fullPath] || history.files[fullPath] != fileStat.size) {
         allFiles.push([currDirectory, file, fileStat.size])
       }
     })
@@ -114,19 +116,34 @@ function processAllFiles() {
     request.write(multipartBody)
     request.end()
 
-    /*
-    fs.createReadStream(currFile[0] + currFile[1], { bufferSize: 4 * 1024 })
-      .on('end', function() {
-        // mark the end of the one and only part
-        request.end(multipartFooter) 
-      })
-      // set "end" to false in the options so .end() isn't called on the request
-      .pipe(request, { end: false })
-    */ 
-
     function gotResponse(data) {
+      data = JSON.parse(data)
       console.log('GOT RESPONSE:', data)
-      smush()
+
+      // Update history
+      history[currFile[0] + currFile[1]] = data.dest_size
+
+      var urlParts = url.parse(data.dest),
+
+      var request = http.get({
+        host: urlParts.host,
+        path: urlParts.pathname
+      }, function(res){
+
+        var imagedata = ''
+        res.setEncoding('binary')
+  
+        res.on('data', function(chunk){
+            imagedata += chunk
+        })
+  
+        res.on('end', function(){
+          fs.writeFile(currFile[0] + currFile[1], imagedata, 'binary', function(err){
+            if (err) console.log(err)
+            smush()
+          })
+        })
+      })
     }
   }
     
@@ -134,6 +151,12 @@ function processAllFiles() {
 }
 
 function done() {
+
+  // Write history
+  var historyString = JSON.stringify(history)
+  fs.writeFileSync(__dirname + '/history.json', historyString, 'utf-8')
+  console.log('NEW HISTORY:', historyString)
+
   console.log('------------------------------------')
   console.log('Image optimization complete.')
 }
