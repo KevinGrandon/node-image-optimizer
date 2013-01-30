@@ -120,10 +120,16 @@ function processAllFiles() {
       data = JSON.parse(data)
       console.log('GOT RESPONSE:', data)
 
+      // If there is no destination, the image is optimized fully
+      if (!data.dest) {
+        smush()
+        return
+      }
+      
       // Update history
-      history[currFile[0] + currFile[1]] = data.dest_size
+      history.files[currFile[0] + currFile[1]] = data.dest_size
 
-      var urlParts = url.parse(data.dest),
+      var urlParts = url.parse(data.dest)
 
       var request = http.get({
         host: urlParts.host,

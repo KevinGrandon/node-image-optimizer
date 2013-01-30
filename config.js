@@ -1,4 +1,4 @@
-exports.baseFolder = '../'
+exports.baseFolder = './'
 exports.imageFolders = [
     "test/"
 ]
