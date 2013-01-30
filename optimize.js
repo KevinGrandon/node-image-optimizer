@@ -52,7 +52,10 @@ getAllFiles()
 function processAllFiles() {
   console.log('Smushing ' + allFiles.length + ' files.')
 
+  counter = 0
+
   function smush() {
+
     if (!allFiles.length) {
       done()
       return
@@ -60,6 +63,9 @@ function processAllFiles() {
 
     var currFile = allFiles.shift()
 
+    counter++
+    console.log('Smushing file: ' + counter + ' (' + currFile[0] + currFile[1] + ')')
+    
     function getMimeType() {
       var mimeTypes = {
         "jpeg": "image/jpeg",
@@ -75,7 +81,14 @@ function processAllFiles() {
 
     // the header for the one and only part (need to use CRLF here)
     var clrf = "\r\n"
-    var fileData = fs.readFileSync(currFile[0] + currFile[1])
+    var fileData
+    try {
+      fileData = fs.readFileSync(currFile[0] + currFile[1])
+    } catch(e) {
+      console.log('Could not process: ', currFile)
+      smush()
+      return
+    }
 
     var multipartHeader = clrf + '--' + boundaryKey + clrf +
       // use your file's mime type here, if known
@@ -109,6 +122,7 @@ function processAllFiles() {
         responseData += chunk
       })
       response.on('end', function () {
+        console.log('Sent file...')
         gotResponse(responseData)
       })
     })
@@ -145,6 +159,7 @@ function processAllFiles() {
         res.on('end', function(){
           fs.writeFile(currFile[0] + currFile[1], imagedata, 'binary', function(err){
             if (err) console.log(err)
+            console.log('Smush complete!')
             smush()
           })
         })

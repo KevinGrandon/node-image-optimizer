@@ -2,7 +2,7 @@
 // This should work with any project assuming you update the below paths
 
 exports.baseFolder = '../gaia/'
-exports.imageFoldersTEST = [
+exports.imageFolders = [
   "apps/bluetooth/style/bb/buttons/images/icons/",
   "apps/bluetooth/style/bb/buttons/images/ui/",
   "apps/bluetooth/style/bb/menus-dialogues/images/ui/",
